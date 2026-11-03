@@ -11,9 +11,9 @@
   const ink = document.createElement('canvas');
   const ix = ink.getContext('2d');
   const INK = '#141210', PAPER = '#f2eee5', REDS = ['#b4321f', '#a62b18', '#c03822'];
-  const WORD = word.textContent.trim();
+  const parts = [...word.querySelectorAll('.w')];
 
-  let W = 0, H = 0, font = '', tx = 0, ty = 0, tw = 0, scale = 1;
+  let W = 0, H = 0, font = '', segs = [], scale = 1;
   let blobs = [], raf = 0, grainPat = null;
 
   if (coarse) hero.querySelector('.hint').lastChild.textContent = 'امسح بإصبعك على الاسم';
@@ -39,11 +39,13 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ix.setTransform(dpr, 0, 0, dpr, 0, 0);
     grainPat = makeGrain();
-    const wr = word.getBoundingClientRect();
+    // كل كلمة من الاسم تنرسم مكانها في الصفحة (على الجوال تنزل سطرين)
     font = `700 ${getComputedStyle(word).fontSize} Ruqaa, serif`;
-    tx = wr.left - r.left + wr.width / 2;
-    ty = wr.top - r.top + wr.height / 2;
-    ctx.font = font; tw = ctx.measureText(WORD).width;
+    ctx.font = font;
+    segs = parts.map(el => {
+      const b = el.getBoundingClientRect(), t = el.textContent.trim();
+      return { t, x: b.left - r.left + b.width / 2, y: b.top - r.top + b.height / 2, w: ctx.measureText(t).width };
+    });
     scale = Math.max(.55, Math.min(1.5, Math.min(W, H) / 760));
     draw(performance.now());
   }
@@ -51,7 +53,8 @@
   function text(c, color) {
     c.save();
     c.font = font; c.direction = 'rtl'; c.textAlign = 'center'; c.textBaseline = 'middle';
-    c.fillStyle = color; c.fillText(WORD, tx, ty);
+    c.fillStyle = color;
+    for (const g of segs) c.fillText(g.t, g.x, g.y);
     c.restore();
   }
 
@@ -133,16 +136,19 @@
   // أول ما تفتح الصفحة: ضربة حبر تمشي على الاسم من اليمين لليسار مثل الكتابة
   function intro() {
     if (reduced) {
-      for (let i = 0; i <= 8; i++) drop(tx + tw / 2 - tw * i / 8, ty + Math.sin(i) * 20 * scale, 46 * scale, true);
+      for (const g of segs) for (let i = 0; i <= 5; i++) drop(g.x + g.w / 2 - g.w * i / 5, g.y + Math.sin(i) * 20 * scale, 46 * scale, true);
       draw(performance.now());
       return;
     }
-    const steps = 22;
-    for (let i = 0; i <= steps; i++) {
-      setTimeout(() => {
-        const p = i / steps;
-        splash(tx + tw / 2 - tw * p, ty + Math.sin(p * 7) * 28 * scale, 0);
-      }, 500 + i * 55);
+    let k = 0;
+    for (const g of segs) {
+      const steps = Math.max(8, Math.round(g.w / (34 * scale)));
+      for (let i = 0; i <= steps; i++, k++) {
+        setTimeout(() => {
+          const p = i / steps;
+          splash(g.x + g.w / 2 - g.w * p, g.y + Math.sin(p * 7) * 26 * scale, 0);
+        }, 500 + k * 50);
+      }
     }
   }
 

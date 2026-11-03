@@ -33,7 +33,8 @@ a{color:inherit}
 .hero{position:relative;min-height:100svh;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr auto;padding:78px var(--gut) 28px;overflow:hidden;touch-action:pan-y}
 .hero .meta{display:flex;justify-content:space-between;font-size:14px;color:var(--muted);border-bottom:1.5px solid var(--rule);padding-bottom:10px;position:relative;z-index:2}
 .big{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;z-index:1}
-.big .word{display:block;font:700 min(46vw,50svh)/1.12 'Ruqaa',serif;letter-spacing:0;color:var(--ink);user-select:none}
+.big .word{display:flex;flex-wrap:wrap;justify-content:center;column-gap:.22em;font:700 min(27vw,40svh)/1.12 'Ruqaa',serif;letter-spacing:0;color:var(--ink);user-select:none}
+.big .w{display:block}
 .js .big .word{color:transparent}
 .big .full{display:block;font:700 clamp(24px,4vw,46px)/1.3 'Ruqaa',serif;margin-top:-.2em;position:relative;z-index:2}
 .big .full::before{content:"";display:inline-block;width:1.4em;height:2px;background:var(--seal);vertical-align:middle;margin-inline-end:.4em}
@@ -141,7 +142,7 @@ a{color:inherit}
   .bar{padding-top:12px}
   .bar nav{font-size:14px;gap:14px}
   .hero{padding-top:66px}
-  .big .word{font-size:min(56vw,44svh)}
+  .big .word{font-size:min(54vw,27svh)}
   .foot-row{grid-template-columns:1fr auto;gap:12px}
   .hint{grid-column:1/-1;grid-row:1;justify-self:start}
   .tool summary{grid-template-columns:36px minmax(0,1fr) 26px;gap:4px 12px}
